@@ -160,6 +160,30 @@ timer1_enable(TIM_DIV16, TIM_EDGE, TIM_SINGLE);
 
 
 
+/*
+ * 
+ Souliss brigth updating
+ Method 1:
+if(memory_map)  memory_map[MaCaco_IN_s + Slot] = Souliss_T1n_BrightUp ;
+if(memory_map)  memory_map[MaCaco_IN_s + Slot] = Souliss_T1n_BrightDown ;
+
+Method 2:
+ssInput(Slot)=Souliss_T1n_BrightUp;
+ssInput(Slot)=Souliss_T1n_BrightDown;
+
+Method 3: 
+mInput(Slot)=Souliss_T1n_BrightUp;
+mInput(Slot)=Souliss_T1n_BrightDown;
+     
+
+...
+Souliss_Logic_T19(memory_map, 0, &data_changed);
+
+Generally the brightess is not notified as change but this applies also for the app, so that you never see a change in brightness because is supposed to don't be required. 
+In any case, add SetTrigger() just after processing the logic (and before processing the communication) and you will force the node to notify the actual state.
+
+ */
+
 
 
 void rotary_loop()
@@ -174,6 +198,7 @@ void rotary_loop()
 //   if(memory_map)  memory_map[MaCaco_IN_s + 0] = Souliss_T1n_BrightUp ;
     ssInput(0)=Souliss_T1n_BrightUp;
     Souliss_Logic_T19(memory_map, 0, &data_changed);
+    SetTrigger();
   //DigKeepHold(32,Souliss_T1n_ToggleCmd, Souliss_T1n_BrightUp, 0);  
   break;
   case 'D': val[channel]-=Step;
@@ -181,6 +206,7 @@ void rotary_loop()
    if(memory_map)  memory_map[MaCaco_IN_s + 0] = Souliss_T1n_BrightDown ;
    ssInput(0)=Souliss_T1n_BrightDown;
    Souliss_Logic_T19(memory_map, 0, &data_changed);
+   SetTrigger();
   //DigKeepHold(32,Souliss_T1n_ToggleCmd, Souliss_T1n_BrightDown, 0);  
   
   }
